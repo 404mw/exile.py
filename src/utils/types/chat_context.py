@@ -3,7 +3,7 @@ from typing import List
 
 
 class History(BaseModel):
-    user: str
+    user: str = "unknown"
     system: str
 
 class ChatContext(BaseModel):
