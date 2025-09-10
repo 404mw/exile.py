@@ -161,5 +161,9 @@
     "name": "shadow",
     "aliases": ["mock", "mockman", "ssm"],
     "responses": ["./media/shadow.jpg"]
+  },
+  {
+    "name": "wolv",
+    "responses": ["./media/wolverine.gif"]
   }
 ]

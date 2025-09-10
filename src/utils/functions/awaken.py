@@ -40,12 +40,12 @@ def make_response(iterations: int, result_list: dict):
     retire = 0
     gala_points = 0
     csg: int = iterations * 100
-    final_response: str = f"You awakened **{iterations}** times with **{pool_name}** odds\n\n"
+    final_response: str = f"You awakened `{iterations}` times with **{pool_name}** odds\n\n"
 
     for index, value in enumerate(result_list.values()):
         if value:
             current_data = pool[index]
-            final_response += f"- {current_data["emoji"]} - {value} -> {current_data['retire'] * value}\n"
+            final_response += f"- {current_data["emoji"]} x {value} -> {current_data['retire'] * value}\n"
             retire += current_data["retire"] * value
             gala_points += current_data["points"] * value
 
