@@ -39,7 +39,7 @@ class BossHP(commands.Cog):
 
             result: str = get_se_hp(boss, perc)
             if result == 0:
-                response = f"No data available for {boss}{emoji_boss}"
+                response = f"No available data for {boss}{emoji_boss}"
             else:
                 response = f"> **x{boss}** {emoji_hp} at **{perc}%**\n> \n> {emoji_boss} **{result:.13e}** remaining"
 

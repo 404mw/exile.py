@@ -33,6 +33,6 @@ class Emojis(BaseModel):
     awakensss: str = "<:awakensss:1329829693968613428>"
 
 class Config(BaseModel):
-    prefix: str = "!"
+    PREFIX: str = "!"
     allowed_channels: AllowedChannels = Field(default_factory=AllowedChannels)
     emojis: Emojis = Field(default_factory=Emojis)

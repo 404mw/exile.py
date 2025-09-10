@@ -7,5 +7,4 @@ class History(BaseModel):
     system: str
 
 class ChatContext(BaseModel):
-    username: str = "unknown"
     history: List[History]
