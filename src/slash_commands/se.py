@@ -6,7 +6,18 @@ from src.utils.config import config
 
 
 class BossHP(commands.Cog):
+    """
+    Star Expedition (SE) Boss HP Calculator Cog.
+    Provides slash commands to calculate boss HP at different levels and percentages.
+    """
+    
     def __init__(self, bot: commands.Bot):
+        """
+        Initialize the BossHP cog.
+        
+        Args:
+            bot (commands.Bot): The bot instance this cog is being added to
+        """
         self.bot = bot
 
     @nextcord.slash_command(

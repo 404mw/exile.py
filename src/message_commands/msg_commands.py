@@ -10,7 +10,24 @@ from src.utils.config import config
 
 
 class MessageCommands(commands.Cog):
+    """
+    A cog that handles message-based commands with a prefix.
+    Loads commands and their responses from a JSON file and responds to matching messages.
+
+    Features:
+    - Case-insensitive command matching
+    - Alias support for commands
+    - Media file responses (images/GIFs)
+    - Random response selection if multiple responses exist
+    """
+    
     def __init__(self, bot: commands.Bot):
+        """
+        Initialize the MessageCommands cog.
+        
+        Args:
+            bot (commands.Bot): The bot instance this cog is being added to
+        """
         self.bot = bot
         self.prefix = config.PREFIX
         self.commands_data = self.load_commands()

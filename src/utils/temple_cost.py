@@ -1,3 +1,11 @@
+"""
+Temple Level Cost Data.
+Contains resource requirements for each temple level (1-22).
+Each level requires:
+- Aurora Gems
+- Scattered Spiritvein Shards
+"""
+
 from typing import List
 from .types.temple_cost import Temple
 

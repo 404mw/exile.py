@@ -3,7 +3,18 @@ from nextcord.ext import commands
 from src.utils.functions import roll_dice
 
 class Dice(commands.Cog):
+    """
+    Dice Rolling Command Cog.
+    Provides a slash command to roll a dice with a configurable number of sides.
+    """
+    
     def __init__(self, bot: commands.Bot):
+        """
+        Initialize the Dice cog.
+        
+        Args:
+            bot (commands.Bot): The bot instance this cog is being added to
+        """
         self.bot = bot
 
     @nextcord.slash_command(name="dice", description="Roll a dice")

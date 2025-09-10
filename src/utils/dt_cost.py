@@ -1,6 +1,17 @@
+"""
+Divine Temple cost data module.
+Contains a list of resource costs for different temple ranks (Origin through Nirvana).
+Each rank entry includes:
+- Aurora Gems cost
+- Spiritvein Shards cost
+- COTS (Crystals of Transcendence) cost
+- Stellar Shards cost
+"""
+
 from typing import List
 from .types.dt_cost import Costs
 
+# List of costs for each Divine Temple rank
 dt_cost: List[Costs] = [
     Costs(
         name = "origin",

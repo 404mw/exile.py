@@ -13,7 +13,16 @@ else:
     pool_name: str = "normal"
 
 
-def get_random_answer(pool):
+def get_random_answer(pool: list) -> str | None:
+    """
+    Get a random awakening result based on the probability distribution.
+    
+    Args:
+        pool (list): List of possible awakening outcomes with their probabilities
+        
+    Returns:
+        str | None: The selected awakening grade or None if an error occurs
+    """
     random_value = random.random()
     cumulative_probability = 0.0
 
@@ -25,7 +34,16 @@ def get_random_answer(pool):
     return None  # Fallback in case of an error
 
 
-def run_multiple_selections(iterations):
+def run_multiple_selections(iterations: int) -> dict:
+    """
+    Perform multiple awakening attempts and track results.
+    
+    Args:
+        iterations (int): Number of awakening attempts to perform
+        
+    Returns:
+        dict: Dictionary with awakening grades as keys and their counts as values
+    """
     results = {item["answer"]: 0 for item in pool}
     
     for _ in range(iterations):
@@ -35,8 +53,18 @@ def run_multiple_selections(iterations):
 
     return results
 
-def make_response(iterations: int, result_list: dict):
+def make_response(iterations: int, result_list: dict) -> str:
+    """
+    Format awakening results into a Discord message.
     
+    Args:
+        iterations (int): Number of awakening attempts performed
+        result_list (dict): Dictionary of awakening results
+        
+    Returns:
+        str: Formatted Discord message with awakening statistics
+              including retire value, CSG cost, and gala points
+    """
     retire = 0
     gala_points = 0
     csg: int = iterations * 100

@@ -7,7 +7,20 @@ from utils.functions.awaken import run_multiple_selections, make_response
 from utils.config import config
 
 class Awaken(commands.Cog):
+    """
+    Awakening Simulation Command Cog.
+    Provides a slash command to simulate hero awakenings with different
+    probability pools (normal or buffed) and calculate total resources
+    spent and gained.
+    """
+    
     def __init__(self, bot: commands.Bot):
+        """
+        Initialize the Awaken cog.
+        
+        Args:
+            bot (commands.Bot): The bot instance this cog is being added to
+        """
         self.bot = bot
 
     @nextcord.slash_command(

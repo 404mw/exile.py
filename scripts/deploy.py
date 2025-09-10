@@ -1,3 +1,14 @@
+"""
+Bot Deployment Script.
+This script handles the deployment and hot-reloading of Discord bot commands.
+
+Features:
+- Automatic command registration
+- Hot-reloading of commands when files change
+- Error handling and graceful shutdown
+- Command file monitoring and updates
+"""
+
 import os
 import sys
 import time

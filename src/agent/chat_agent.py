@@ -1,7 +1,15 @@
+"""
+Chat Agent Module.
+Implements a conversational AI agent using the OpenAI API.
+This agent handles general chat interactions and provides helpful
+but slightly sarcastic responses.
+"""
+
 import os
 from agents import Agent, ModelSettings
 from dotenv import load_dotenv
 
+# Load environment variables for OpenAI model
 load_dotenv()
 MODEL = os.getenv("OPENAI_MODEL")
 

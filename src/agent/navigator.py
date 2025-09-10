@@ -1,3 +1,13 @@
+"""
+Navigator Agent Module.
+This agent acts as a traffic controller for user queries,
+directing them to either the tool_agent (for game-specific queries)
+or chat_agent (for general conversation).
+
+The navigator uses a simple classification system to determine
+which agent should handle the user's request.
+"""
+
 import sys, os
 sys.path.append(os.path.abspath("src"))
 from agents import Agent, Runner
@@ -5,6 +15,7 @@ from dotenv import load_dotenv
 from agent.tool_caller import tool_agent
 from agent.chat_agent import chat_agent
 
+# Load environment variables for model configuration
 load_dotenv()
 MODEL = os.getenv("OPENAI_MODEL")
 

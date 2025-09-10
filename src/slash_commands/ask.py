@@ -4,7 +4,20 @@ from agents import Runner
 from src.agent.navigator import nav_agent
 
 class ask(commands.Cog):
+    """
+    AI-powered Ask Command Cog.
+    Provides a slash command that lets users ask questions which are answered by
+    the navigator agent, which routes queries to either game-specific tools or
+    the general chat agent.
+    """
+    
     def __init__(self, bot: commands.Bot):
+        """
+        Initialize the ask cog.
+        
+        Args:
+            bot (commands.Bot): The bot instance this cog is being added to
+        """
         self.bot = bot
 
     @nextcord.slash_command(name="ask", description="i'm still learning but i'll try my best")
