@@ -7,7 +7,7 @@ from nextcord.ext import commands
 from pydantic import BaseModel, Field
 from utils.functions import get_dt_calc
 from utils.temple_cost import temple_cost as temp_cost
-from utils.config import config
+from utils.config import emojis
 
 
 class TempleRequirement(BaseModel):
@@ -191,8 +191,8 @@ class DTCalc(commands.Cog):
             resources = ResourceInfo(
                 gems=calc_result.user_gems or 0,
                 spirits=calc_result.user_spirits or 0,
-                emoji_gem=config.emojis.gem,
-                emoji_spirit=config.emojis.spiritvein
+                emoji_gem=emojis.gem,
+                emoji_spirit=emojis.spiritvein
             )
 
             # Build response message

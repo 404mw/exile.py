@@ -13,7 +13,7 @@ Args:
         If omitted, assumes full HP.
 
 Returns:
-    str: The calculated boss HP.
+    int: The calculated boss HP.
 """
 
     bosshp = se_hp.get(hp)
@@ -21,4 +21,4 @@ Returns:
         return f"{hp} isnt a valid input"
     
     result = (bosshp * percentage) / 100
-    return str(result)
+    return result

@@ -2,6 +2,7 @@ import nextcord
 from nextcord.ext import commands
 from agents import Runner
 from src.agent.navigator import nav_agent
+from src.utils.config import config
 
 class ask(commands.Cog):
     """
@@ -20,7 +21,11 @@ class ask(commands.Cog):
         """
         self.bot = bot
 
-    @nextcord.slash_command(name="ask", description="i'm still learning but i'll try my best")
+    @nextcord.slash_command(
+            name="ask",
+            description="i'm still learning but i'll try my best",
+            guild_ids=[config.exile_server_id]
+        )
     async def ask(
         self,
         interaction: nextcord.Interaction,

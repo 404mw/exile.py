@@ -4,7 +4,7 @@ from nextcord.ext import commands
 
 sys.path.append(os.path.abspath("src"))
 from utils.functions.awaken import run_multiple_selections, make_response
-from utils.config import config
+from utils.config import allowed_channels
 
 class Awaken(commands.Cog):
     """
@@ -41,13 +41,12 @@ class Awaken(commands.Cog):
     ):
         try:
             # Check whether its an allowed channel or not
-            # allowed_channel = config.allowed_channels.awaken
-            allowed_channel = "spam"
+            allowed_channel = allowed_channels.awaken
             if interaction.guild and isinstance(interaction.channel, nextcord.TextChannel):
                 if interaction.channel.name != allowed_channel:
                     await interaction.response.send_message(
                         f"This command can only be used in #{allowed_channel} channel.\n"
-                        f"Try if it exists, create one otherwise",
+                        f"Try if it's there, create one otherwise",
                         ephemeral=True
                     )
                     return

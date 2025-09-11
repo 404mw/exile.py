@@ -21,7 +21,7 @@ Args:
     percentage (int, optional): Boss’s remaining HP %.
 
 Returns:
-    str: The calculated boss HP.
+    int: The calculated boss HP.
     """,
     use_docstring_info = False
 )

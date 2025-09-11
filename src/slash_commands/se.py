@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 from src.utils.functions import get_se_hp
-from src.utils.config import config
+from src.utils.config import emojis
 
 
 
@@ -44,12 +44,15 @@ class BossHP(commands.Cog):
         )
     ):
         try:
-            emoji_hp: str = config.emojis.hp
-            emoji_boss: str = config.emojis.se2g if boss <= 100 else config.emojis.se1g
+            emoji_hp: str = emojis.hp
+            emoji_boss: str = emojis.se2g if boss <= 100 else emojis.se1g
             response: str = "⚠️ Try again"
 
+            print("SE command initialized")
+
             result: str = get_se_hp(boss, perc)
-            if result == 0:
+            print(f"Functions called\n{result}")
+            if not result:
                 response = f"No available data for {boss}{emoji_boss}"
             else:
                 response = f"> **x{boss}** {emoji_hp} at **{perc}%**\n> \n> {emoji_boss} **{result:.13e}** remaining"
@@ -60,6 +63,7 @@ class BossHP(commands.Cog):
             await interaction.response.send_message(
                 f"⚠️ Something went wrong and i couldn't get or calculate HP", ephemeral=True
             )
+            print(e)
 
 def setup(bot: commands.Bot):
     bot.add_cog(BossHP(bot))

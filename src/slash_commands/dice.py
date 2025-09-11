@@ -1,6 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 from src.utils.functions import roll_dice
+from src.utils.config import config
 
 class Dice(commands.Cog):
     """
@@ -17,7 +18,11 @@ class Dice(commands.Cog):
         """
         self.bot = bot
 
-    @nextcord.slash_command(name="dice", description="Roll a dice")
+    @nextcord.slash_command(
+            name="dice",
+            description="Roll a dice",
+            guild_ids=[config.test_server_id]    
+        )
     async def dice(self, interaction: nextcord.Interaction, sides: int = 6):
         try:
             result = roll_dice(sides)

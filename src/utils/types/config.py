@@ -34,5 +34,5 @@ class Emojis(BaseModel):
 
 class Config(BaseModel):
     PREFIX: str = "!"
-    allowed_channels: AllowedChannels = Field(default_factory=AllowedChannels)
-    emojis: Emojis = Field(default_factory=Emojis)
+    test_server_id: int
+    exile_server_id: int
