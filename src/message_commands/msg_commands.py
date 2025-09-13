@@ -33,8 +33,8 @@ class MessageCommands(commands.Cog):
         self.commands_data = self.load_commands()
 
     def load_commands(self):
-        """Load the commands.json file from the same directory."""
-        json_path = Path(__file__).parent / "msgCommands.json"
+        """Load the commands.json file from the data directory."""
+        json_path = Path(__file__).parent.parent.parent / "data" / "msgCommands.json"
         with open(json_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
