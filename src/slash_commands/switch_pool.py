@@ -1,6 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 from src.utils.config import config
+from src.utils.functions.reload_config import reload_all
 import json
 import os
 
@@ -50,8 +51,24 @@ class SwitchPool(commands.Cog):
             
             with open(pool_path, "w") as f:
                 json.dump(data, f, indent=4)
-                
-            await interaction.response.send_message(f"Successfully set value to {value}")
+            
+            # Reload all modules to ensure the change takes effect
+            success, report = reload_all(self.bot)
+            
+            if success:
+                pool_type = "normal" if value else "buffed"
+                await interaction.response.send_message(
+                    f"✅ Successfully switched to **{pool_type}** pool!",
+                    ephemeral=True
+                )
+            else:
+                msg = ["⚠️ Pool was switched but reload had some issues:"]
+                if report["failed"]:
+                    msg.extend(f"• {error}" for error in report["failed"])
+                await interaction.response.send_message(
+                    "\n".join(msg),
+                    ephemeral=True
+                )
         except Exception as e:
             await interaction.response.send_message(f"Error: {str(e)}", ephemeral=True)
 

@@ -7,7 +7,7 @@ from nextcord import SlashOption, Interaction
 from nextcord.ext import commands
 
 from src.utils.types.msg_commands import MsgCommand
-from src.utils.functions.reload_config import reload_msg_commands
+from src.utils.functions.reload_config import reload_all
 from src.utils.config import config
 
 
@@ -93,15 +93,20 @@ class AddCommand(commands.Cog):
                 json.dump(commands_data, f, indent=2)
             
             # Reload bot configuration
-            if reload_msg_commands(self.bot):
-                action = "updated" if existing_cmd else "added"
+            success, report = reload_all(self.bot)
+            action = "updated" if existing_cmd else "added"
+            
+            if success:
                 await interaction.response.send_message(
                     f"Successfully {action} command !`{name}`",
                     ephemeral=True
                 )
             else:
+                msg = [f"Command !`{name}` was saved but reload had some issues:"]
+                if report["failed"]:
+                    msg.extend(f"• {error}" for error in report["failed"])
                 await interaction.response.send_message(
-                    "Command was saved but failed to reload. !`reload_cmd` required.",
+                    "\n".join(msg),
                     ephemeral=True
                 )
                 

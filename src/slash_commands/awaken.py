@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 
 sys.path.append(os.path.abspath("src"))
-from utils.functions.awaken import run_multiple_selections, make_response
+from utils.functions.awaken import make_response
 from utils.config import allowed_channels
 
 class Awaken(commands.Cog):
@@ -50,8 +50,7 @@ class Awaken(commands.Cog):
                         ephemeral=True
                     )
                     return
-            func_result = run_multiple_selections(times)
-            final_reply = make_response(times, func_result) 
+            final_reply = make_response(times) 
 
             await interaction.response.send_message(final_reply)
 

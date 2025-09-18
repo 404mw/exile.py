@@ -4,7 +4,7 @@ import nextcord
 from nextcord import SlashOption, Interaction
 from nextcord.ext import commands
 from src.utils.config import config
-from src.utils.functions.reload_config import reload_msg_commands
+from src.utils.functions.reload_config import reload_all
 
 
 class DeleteCommand(commands.Cog):
@@ -75,20 +75,25 @@ class DeleteCommand(commands.Cog):
             self.save_commands(commands_data)
             
             # Reload bot configuration
-            if reload_msg_commands(self.bot):
-                # Create response message including aliases if they exist
-                aliases_info = ""
-                if "aliases" in removed_command and removed_command["aliases"]:
-                    aliases = ", ".join(f"`{alias}`" for alias in removed_command["aliases"])
-                    aliases_info = f"\nAliases removed: {aliases}"
-                
+            success, report = reload_all(self.bot)
+            
+            # Create response message including aliases if they exist
+            aliases_info = ""
+            if "aliases" in removed_command and removed_command["aliases"]:
+                aliases = ", ".join(f"`{alias}`" for alias in removed_command["aliases"])
+                aliases_info = f"\nAliases removed: {aliases}"
+            
+            if success:
                 await interaction.followup.send(
                     f"✅ Successfully deleted command `{name}`!{aliases_info}",
                     ephemeral=True
                 )
             else:
+                msg = [f"⚠️ Command `{name}` was deleted but reload had some issues:"]
+                if report["failed"]:
+                    msg.extend(f"• {error}" for error in report["failed"])
                 await interaction.followup.send(
-                    "⚠️ Command was deleted but failed to reload. Bot restart required.",
+                    "\n".join(msg),
                     ephemeral=True
                 )
                 
