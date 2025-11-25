@@ -32,8 +32,8 @@ from src.message_commands import msg_commands
 msg_commands.setup(bot)
 
 
-@bot.event
-async def on_ready():
-    print(f"✅ Logged in as {bot.user}")
+# Load all events from src/events
+import src.events
+src.events.setup(bot)
 
 bot.run(TOKEN)
