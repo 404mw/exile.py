@@ -16,3 +16,7 @@ wheels/
 data
 media
 tests
+
+
+.pytest_cache
+.vscode
