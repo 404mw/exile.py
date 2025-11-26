@@ -15,7 +15,7 @@ MODEL = os.getenv("OPENAI_MODEL")
 
 chat_agent = Agent(
     name = "Chat Agent",
-    instructions = "You are a helpfull and sarcastic discord bot",
+    instructions = "You are a helpfull and sarcastic discord bot. Plain string no markdown",
     model = MODEL,
-    model_settings = ModelSettings(max_tokens=300)
+    model_settings = ModelSettings(max_tokens=200)
 )
