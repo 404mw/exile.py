@@ -16,6 +16,7 @@ from src.utils.functions.giveaway import (
     , gather_reaction_user_ids_from_message, pick_reaction_winners
 )
 from src.utils.types.giveaway import Giveaway
+from src.utils.permissions import can_member_start_giveaway
 
 def duration_to_seconds(duration: str) -> int:
 	mapping = {
@@ -26,7 +27,8 @@ def duration_to_seconds(duration: str) -> int:
 		"7 days": 604800,
 	}
 	return mapping.get(duration, 86400)
-# permission helper removed — we check admin/owner inline in the command
+# permission helper removed — creation permission now requires the bot owner
+# or the role named 'giveaway manager' and is checked inline in the command
 class GiveawayView(View):
 	def __init__(self, giveaway_id, host_id, ended: bool = False):
 		super().__init__(timeout=None)
@@ -136,7 +138,9 @@ class GiveawayView(View):
 			await interaction.response.send_message("No ended giveaway to reroll.", ephemeral=True)
 			return
 
-		# Permission: only server mods (manage_guild/admin) or the bot owner may reroll
+		# Permission: only the bot owner or members with the role named
+		# 'giveaway manager' (case-insensitive) may reroll — mods/admins are
+		# no longer allowed unless they also have the role.
 		if isinstance(interaction.user, nextcord.Member):
 			user_member = interaction.user
 		else:
@@ -146,11 +150,14 @@ class GiveawayView(View):
 			is_owner = await interaction.client.is_owner(interaction.user)
 		except Exception:
 			is_owner = False
+		# If there's no member object and caller is not owner, deny.
 		if not user_member and not is_owner:
 			await interaction.response.send_message("You do not have permission to reroll this giveaway.", ephemeral=True)
 			return
-		if not (is_owner or (user_member is not None and (user_member.guild_permissions.manage_guild or user_member.guild_permissions.administrator))):
-			await interaction.response.send_message("Only server moderators or the bot owner can reroll.", ephemeral=True)
+		# Allow rerolls only to the owner or members that match the 'giveaway
+		# manager' role. Use the canonical permission helper for consistency.
+		if not can_member_start_giveaway(user_member, is_owner):
+			await interaction.response.send_message("You do not have permission to reroll this giveaway. Only the bot owner or members with the 'giveaway manager' role may reroll giveaways.", ephemeral=True)
 			return
 
 		# Defer so we don't hit the interaction timeout while doing fetch/edit
@@ -193,7 +200,7 @@ class GiveawayView(View):
 		if channel:
 			winner_mentions = ", ".join(f"<@{uid}>" for uid in new_winners)
 			if isinstance(channel, nextcord.TextChannel):
-				await channel.send(f"🎉 Reroll! New winners: {winner_mentions}")
+				await channel.send(f"🎉 Reroll successful!\nNew winners: {winner_mentions}")
 				# If the original message exists, edit the embed to show new winners
 				if g.message_id:
 					try:
@@ -296,10 +303,13 @@ class GiveawayCog(commands.Cog):
 		mention: bool = SlashOption(description="Mention @everyone?", required=False, default=False),
 		message: str = SlashOption(description="Custom message to be attached", required=False, default=None)
 	):
-		# Permission check
+		# Permission check: only the bot owner or members with the role
+		# named "giveaway manager" may create giveaways. This replaced the
+		# previous admins/mods check.
 		user_id = getattr(interaction.user, "id", None)
 		member = interaction.user if isinstance(interaction.user, nextcord.Member) else (interaction.guild.get_member(user_id) if interaction.guild and user_id else None)
-		# Permission: allow server admins or the bot owner
+		# Permission: allow only members who have the role "giveaway manager"
+		# (case-insensitive) or the bot owner
 		if not member:
 			await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
 			return
@@ -309,8 +319,9 @@ class GiveawayCog(commands.Cog):
 		except Exception:
 			owner_check = False
 
-		if not (member.guild_permissions.administrator or owner_check):
-			await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
+		# check for role name match (case-insensitive)
+		if not can_member_start_giveaway(member, owner_check):
+			await interaction.response.send_message("You do not have permission to use this command. Only the bot owner or members with the 'giveaway manager' role may start giveaways.", ephemeral=True)
 			return
 
 		# Find #giveaway channel (text channels only)

@@ -12,5 +12,7 @@ wheels/
 # Environmental variables
 .env
 
+# Directories
 data
 media
+tests

@@ -205,7 +205,7 @@ def default_embed(title: str, description: Optional[str] = None, color: int = 0x
 
     This centralizes thumbnail/description behavior so the UI is always consistent.
     """
-    desc = description or "A new Giveaway has just started.\n React with 🎉 now to enter."
+    desc = description or "A new Giveaway has just started.\nReact with 🎉 now to enter."
     embed = nextcord.Embed(title=title, description=desc, color=color)
     embed.set_thumbnail(url=_thumbnail_url_from_custom_emoji(DEFAULT_THUMBNAIL_EMOJI))
     return embed

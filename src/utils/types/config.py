@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field
 class AllowedChannels(BaseModel):
     # defaults
     awaken: str = "bot-spam"
-    giveaway: str = "1376982644939821229"
 
 class Emojis(BaseModel):
     # General
@@ -36,3 +35,5 @@ class Config(BaseModel):
     PREFIX: str = "!"
     test_server_id: int
     exile_server_id: int
+    # Role name used to identify users allowed to manage giveaways
+    giveaway_manager_role: str = Field(default="giveaway manager", description="Role name that can create/reroll giveaways")
