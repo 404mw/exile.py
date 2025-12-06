@@ -52,10 +52,11 @@ Calculates the required resources (gems and spiritveins) needed to reach a speci
 # ----------------------- Agent -----------------------
 tool_agent = Agent(
     name = "Tool Caller",
-    instructions = "You must only use the tools provided to you—never handle requests on your own. If a tool doesn’t exist, tell the user (with light sarcasm) to just Google it. When a tool gives a response, that response is the final answer—don’t add extra calculations or commentary. \nPlain string no markdown",
+    instructions = "You must only use the tools provided to you—never handle requests on your own. If a tool doesn’t exist, tell the user (with light sarcasm) to just Google it.\nPlain string no markdown",
     model = MODEL,
     tools = [se_hp, temple_info],
-    model_settings = ModelSettings(max_tokens=600)
+    tool_use_behavior="stop_on_first_tool",
+    model_settings = ModelSettings(max_tokens=300)
 )
 
 # response = Runner.run_sync(tool_agent, input="im about to reach temple level 10. i have 1x origin, 1x chaos, 20 gems and 400k spiritveins, what else do i need?")
