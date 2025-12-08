@@ -19,6 +19,7 @@ class CreateMessage(commands.Cog):
         self,
         interaction: Interaction,
         content: str = SlashOption(description="The message content", required=True),
+        channel: Optional[nextcord.TextChannel] = SlashOption(description="Channel to send the message in (defaults to current channel)", required=False, default=None),
         reply_to: Optional[str] = SlashOption(description="Message ID (or link) to reply to", required=False, default=None)
     ) -> None:
         # resolve member and check owner/mod permissions
@@ -51,9 +52,9 @@ class CreateMessage(commands.Cog):
             )
             return
 
-        # choose the channel where the command was invoked
-        channel = getattr(interaction, "channel", None)
-        if channel is None or not hasattr(channel, "send"):
+        # choose the channel where the command was invoked, or use the provided channel
+        target_channel = channel if channel is not None else getattr(interaction, "channel", None)
+        if target_channel is None or not hasattr(target_channel, "send"):
             await interaction.response.send_message("Cannot identify the target channel for the message.", ephemeral=True)
             return
 
@@ -114,16 +115,16 @@ class CreateMessage(commands.Cog):
                 # bail out — not an error to continue, leave sent as None
             else:
                 try:
-                    orig = await channel.fetch_message(parsed_id)
+                    orig = await target_channel.fetch_message(parsed_id)
                     sent = await orig.reply(content)
                 except Exception:
                     try:
-                        sent = await channel.send(content)
+                        sent = await target_channel.send(content)
                     except Exception:
                         sent = None
         else:
             try:
-                sent = await channel.send(content)
+                sent = await target_channel.send(content)
             except Exception:
                 sent = None
 

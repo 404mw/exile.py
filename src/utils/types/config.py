@@ -31,6 +31,16 @@ class Emojis(BaseModel):
     awakend: str = "<:awakend:1328071247384416286>"
     awakensss: str = "<:awakensss:1329829693968613428>"
 
+    # Grimoire
+    grim_essence: str = "<:grim_essence:1447653904002056212>"
+    grim_imprint: str = "<:grim_imprint:1447655509628031096>"
+    grim_book1: str = "<:grim_book1:1447653930816377036>"
+
+    # Pepe the frog
+    point_laugh: str = "<:laugh_point:1356266540739330321>"
+    blush_finger: str = "<:blush_finger:1337833082954317885>"
+    laugh: str = "<a:laugh:1356266810718027820>"
+
 class Config(BaseModel):
     PREFIX: str = "!"
     test_server_id: int

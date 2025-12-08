@@ -18,6 +18,8 @@ wheels/
 media
 tests
 
+# data files
 awaPool.json
 chat_memory.json
 msgCommands.json
+giveaway.json
