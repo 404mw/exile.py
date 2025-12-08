@@ -8,15 +8,16 @@ wheels/
 
 # Virtual environments
 .venv
+.pytest_cache
+.vscode
 
 # Environmental variables
 .env
 
 # Directories
-data
 media
 tests
 
-
-.pytest_cache
-.vscode
+awaPool.json
+chat_memory.json
+msgCommands.json

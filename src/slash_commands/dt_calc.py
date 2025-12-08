@@ -149,17 +149,17 @@ class DTCalc(commands.Cog):
         ),
         bag_aurora: int = nextcord.SlashOption(
             name="bag_aurora",
-            description="Enter Aurora Gems from bag here (limit 0-100)",
+            description="Enter Aurora Gems from bag here (limit 0-250)",
             min_value=0,
-            max_value=100,
+            max_value=250,
             required=False,
             default=0
         ),
         bag_spirit: int = nextcord.SlashOption(
             name="bag_spirit",
-            description="Enter Scattered Spiritvein Shards from bag here (max 999999)",
+            description="Enter Scattered Spiritvein Shards from bag here (max 2,500,000)",
             min_value=0,
-            max_value=999999,
+            max_value=2500000,
             required=False,
             default=0
         ),
