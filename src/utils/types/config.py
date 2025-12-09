@@ -3,6 +3,12 @@ from pydantic import BaseModel, Field
 class Channels(BaseModel):
     # defaults
     spam: str = "bot-spam"
+    exile_chat: int = Field(default=866773791560040519, description="Exile 7 channel ID")
+    level: str = "levels"
+
+class Roles(BaseModel):
+    giveaway_manager_role: str = Field(default="giveaway manager", description="Role name that can create/reroll giveaways")
+    exile_role: int = Field(default=866772888635441162, description="Exile 7 role ID")
 
 class Emojis(BaseModel):
     # General
@@ -46,4 +52,5 @@ class Config(BaseModel):
     test_server_id: int
     exile_server_id: int
     # Role name used to identify users allowed to manage giveaways
-    giveaway_manager_role: str = Field(default="giveaway manager", description="Role name that can create/reroll giveaways")
+    # XP given per message
+    XP: int = Field(default=10, description="Amount of base given per message")

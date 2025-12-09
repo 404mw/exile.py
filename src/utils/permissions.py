@@ -1,4 +1,4 @@
-from src.utils.config import config
+from src.utils.config import roles
 
 
 def can_member_start_giveaway(member, is_owner: bool) -> bool:
@@ -12,7 +12,7 @@ def can_member_start_giveaway(member, is_owner: bool) -> bool:
     if not member:
         return False
     # read the configured target role name and compare case-insensitively
-    target = getattr(config, 'giveaway_manager_role', 'giveaway manager')
+    target = getattr(roles, 'giveaway_manager_role', 'giveaway manager')
     try:
         return any(getattr(r, 'name', '').lower() == target.lower() for r in getattr(member, 'roles', []))
     except Exception:

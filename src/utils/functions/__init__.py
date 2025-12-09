@@ -6,5 +6,6 @@ from .dice import roll_dice
 from .ping import get_ping_response
 from .se_hp import get_se_hp
 from .dt_calc import get_dt_calc
+from .leveling import add_xp, get_user_level_info, get_level_for_xp, get_xp_for_level
 
-__all__ = ['roll_dice', 'get_ping_response', 'get_se_hp', 'get_dt_calc']
+__all__ = ['roll_dice', 'get_ping_response', 'get_se_hp', 'get_dt_calc', 'add_xp', 'get_user_level_info', 'get_level_for_xp', 'get_xp_for_level']

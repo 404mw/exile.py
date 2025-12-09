@@ -44,14 +44,6 @@ class Help(commands.Cog):
             # Define commands and descriptions
             commands_data = [
                 {
-                    "name": "`/ping`",
-                    "description": "> Check the bot's latency"
-                },
-                {
-                    "name": "`/dice`",
-                    "description": "> Roll a dice with configurable sides"
-                },
-                {
                     "name": "`/ask`",
                     "description": "> Ask a general or Idle Heroes related question (AI-powered)"
                 },

@@ -1,7 +1,8 @@
-from .types.config import Emojis, Channels, Config
+from .types.config import Emojis, Channels, Config, Roles
 
 emojis = Emojis()
 channels = Channels()
+roles = Roles()
 
 config = Config(
     test_server_id = 1076157809281994842,
@@ -10,4 +11,4 @@ config = Config(
 
 # Optional string name used to identify the role which can manage giveaways.
 # Default defined in the Config model; explicit here for clarity.
-config.giveaway_manager_role = getattr(config, 'giveaway_manager_role', 'giveaway manager')
+roles.giveaway_manager_role = getattr(config, 'giveaway_manager_role', 'giveaway manager')
