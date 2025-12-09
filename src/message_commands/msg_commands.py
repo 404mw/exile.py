@@ -55,30 +55,33 @@ class MessageCommands(commands.Cog):
         # strip prefix and normalize input
         command_text = self.normalize(content[len(self.prefix):])
 
-        for cmd in self.commands_data:
-            name = self.normalize(cmd["name"])
-            aliases = [self.normalize(alias) for alias in cmd.get("aliases", [])]
+        # Use lookup table to find command name from input (could be alias)
+        lookup = self.commands_data.get("lookup", {})
+        commands_dict = self.commands_data.get("commands", {})
+        
+        command_key = lookup.get(command_text)
+        if not command_key or command_key not in commands_dict:
+            return
+        
+        cmd = commands_dict[command_key]
+        responses = cmd.get("responses", [])
+        if responses:
+            response = random.choice(responses)
 
-            if command_text.startswith(name) or any(command_text.startswith(a) for a in aliases):
-                responses = cmd.get("responses", [])
-                if responses:
-                    response = random.choice(responses)
+            # Check if response is media 
+            if response.startswith("./media"):
+                # Go up two levels from this file (src/messagecommand) → root/
+                project_root = Path(__file__).resolve().parents[2]
+                file_path = project_root / response[2:]  # strip "./" from response
+                
+                if file_path.exists():
+                    await message.reply(file=nextcord.File(file_path))
+                else:
+                    print(f"[WARN] Media file not found: {file_path}")
+            else:
+                await message.reply(response)
 
-                    # Check if response is media 
-                    if response.startswith("./media"):
-                        # Go up two levels from this file (src/messagecommand) → root/
-                        project_root = Path(__file__).resolve().parents[2]
-                        file_path = project_root / response[2:]  # strip "./" from response
-                        
-                        if file_path.exists():
-                            await message.reply(file=nextcord.File(file_path))
-                        else:
-                            print(f"[WARN] Media file not found: {file_path}")
-                    else:
-                        await message.reply(response)
-
-
-                return  # stop after first match
+            return  # stop after first match
 
 
 def setup(bot: commands.Bot):

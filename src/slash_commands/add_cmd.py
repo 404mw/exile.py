@@ -1,31 +1,27 @@
 import json
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import nextcord
 from nextcord import SlashOption, Interaction
 from nextcord.ext import commands
 
-from src.utils.types.msg_commands import MsgCommand
 from src.utils.functions.reload_config import reload_all
 from src.utils.config import config
 
 
-def validate_command_name(cmd_name: str, commands_data: List[dict]) -> bool:
+def validate_command_name(cmd_name: str, lookup: dict) -> bool:
     """
     Validate that the command name doesn't conflict with existing aliases.
     
     Args:
         cmd_name: The name to check
-        commands_data: The current commands data
+        lookup: The lookup table from commands data
         
     Returns:
         bool: True if name is valid (no conflicts), False otherwise
     """
-    for cmd in commands_data:
-        if cmd.get('aliases') and cmd_name in cmd['aliases']:
-            return False
-    return True
+    return cmd_name.lower() not in lookup
 
 
 class AddCommand(commands.Cog):
@@ -59,50 +55,71 @@ class AddCommand(commands.Cog):
         try:
             # Load current commands
             with open(self.json_path, "r", encoding="utf-8") as f:
-                commands_data = json.load(f)
+                data = json.load(f)
+            
+            commands_dict = data.get("commands", {})
+            lookup = data.get("lookup", {})
             
             # Convert responses and aliases to lists
             response_list = [r.strip() for r in responses.split('|')]
-            alias_list = [a.strip() for a in aliases.split('|')] if aliases else None
+            alias_list = [a.strip() for a in aliases.split('|')] if aliases else []
             
-            # Validate command name against existing aliases
-            if not validate_command_name(name, commands_data):
+            # Normalize command name
+            normalized_name = name.lower()
+            
+            # Validate command name against existing commands/aliases
+            if not validate_command_name(normalized_name, lookup):
                 await interaction.response.send_message(
-                    f"Error: The name '{name}' conflicts with an existing command alias.",
+                    f"Error: The name '{name}' conflicts with an existing command.",
                     ephemeral=True
                 )
                 return
             
             # Check if command already exists
-            existing_cmd = next((cmd for cmd in commands_data if cmd["name"] == name), None)
+            existing_cmd = commands_dict.get(normalized_name)
             
             if existing_cmd:
                 # Append new responses to existing command
                 existing_cmd["responses"].extend(response_list)
+                action = "updated"
             else:
                 # Create new command
-                new_cmd = MsgCommand(
-                    name=name,
-                    responses=response_list,
-                    aliases=alias_list
-                )
-                commands_data.append(new_cmd.model_dump(exclude_none=True))
+                commands_dict[normalized_name] = {
+                    "aliases": alias_list,
+                    "responses": response_list
+                }
+                
+                # Add command name to lookup
+                lookup[normalized_name] = normalized_name
+                
+                # Add each alias to lookup
+                for alias in alias_list:
+                    lookup[alias.lower()] = normalized_name
+                
+                action = "added"
+            
+            # Update lookup for existing command if new aliases were added
+            if existing_cmd and alias_list:
+                # Add any new aliases to lookup
+                for alias in alias_list:
+                    lookup[alias.lower()] = normalized_name
+                # Update the aliases in the command
+                existing_cmd["aliases"].extend(alias_list)
             
             # Write updated data back to file
             with open(self.json_path, "w", encoding="utf-8") as f:
-                json.dump(commands_data, f, indent=2)
+                json.dump(data, f, indent=2)
             
             # Reload bot configuration
             success, report = reload_all(self.bot)
-            action = "updated" if existing_cmd else "added"
             
             if success:
                 await interaction.response.send_message(
-                    f"Successfully {action} command !`{name}`",
+                    f"Successfully {action} command `{name}`",
                     ephemeral=True
                 )
             else:
-                msg = [f"Command !`{name}` was saved but reload had some issues:"]
+                msg = [f"Command `{name}` was saved but reload had some issues:"]
                 if report["failed"]:
                     msg.extend(f"• {error}" for error in report["failed"])
                 await interaction.response.send_message(
