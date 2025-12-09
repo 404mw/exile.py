@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
 
-class AllowedChannels(BaseModel):
+class Channels(BaseModel):
     # defaults
-    awaken: str = "bot-spam"
+    spam: str = "bot-spam"
 
 class Emojis(BaseModel):
     # General

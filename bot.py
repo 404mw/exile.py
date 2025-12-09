@@ -8,6 +8,7 @@ import os
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
+from src.utils.config import config
 
 # Load environment variables
 load_dotenv()
@@ -21,7 +22,7 @@ print("Bot token acquired")
 # Configure bot intents
 intents = nextcord.Intents.default()
 intents.message_content = True  # Enable message content intent for message commands
-bot = commands.Bot(intents=intents)
+bot = commands.Bot(command_prefix=config.PREFIX, intents=intents)
 
 # Load slash commands
 import src.slash_commands

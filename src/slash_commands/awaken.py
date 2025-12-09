@@ -4,7 +4,7 @@ from nextcord.ext import commands
 
 sys.path.append(os.path.abspath("src"))
 from utils.functions.awaken import make_response
-from utils.config import allowed_channels
+from utils.config import channels
 
 class Awaken(commands.Cog):
     """
@@ -41,7 +41,7 @@ class Awaken(commands.Cog):
     ):
         try:
             # Check whether its an allowed channel or not
-            allowed_channel = allowed_channels.awaken
+            allowed_channel = channels.spam
             if interaction.guild and isinstance(interaction.channel, nextcord.TextChannel):
                 if interaction.channel.name != allowed_channel:
                     await interaction.response.send_message(

@@ -1,7 +1,7 @@
-from .types.config import Emojis, AllowedChannels, Config
+from .types.config import Emojis, Channels, Config
 
 emojis = Emojis()
-allowed_channels = AllowedChannels()
+channels = Channels()
 
 config = Config(
     test_server_id = 1076157809281994842,
