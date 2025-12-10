@@ -4,8 +4,9 @@ from pydantic import BaseModel, Field
 class Emojis(BaseModel):
     # General
     ping: str = "<:ping:1326194149808144425>"
-    gopnik: str = "<:gopnik:1325482731551068170>"
     hp: str = "<:hp:1325816948889747456>"
+    gopnik: str = "<:gopnik:1325482731551068170>"
+    frendos: str = "<:frendos:1448388270999474186>"
 
     # Star Expedition
     se1g: str = "<a:se1g:1353437489708269628>"

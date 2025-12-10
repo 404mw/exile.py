@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from src.utils.config import config
+from src.utils.config import emojis
 
 
 class Help(commands.Cog):
@@ -48,12 +48,12 @@ class Help(commands.Cog):
                     "description": "> Ask a general or Idle Heroes related question (AI-powered)"
                 },
                 {
-                    "name": "`/dt_calc`",
-                    "description": "> Calculate Destiny Transition upgrade costs"
+                    "name": "`/dt_calc`, `/grim_calc`",
+                    "description": "> Calculate Destiny Transition upgrade costs and Grimoire upgrade costs with event choice equivalents"
                 },
                 {
-                    "name": "`/grim_calc`",
-                    "description": "> Calculate Grimoire upgrade costs with event choice equivalents"
+                    "name": "`/leaderboard`, `/user_lvl`, `/lvl_costs`",
+                    f"description": "> Discord level based commands, shows top 5 frens by xp gained, see other frens data and level costs."
                 },
                 {
                     "name": "`/awaken`",
@@ -78,7 +78,7 @@ class Help(commands.Cog):
                 )
 
             # Add footer
-            embed.set_footer(text="Use /help to see this message anytime")
+            embed.set_footer(text=f"Use /help to see this message anytime {emojis.frendos}")
 
             await interaction.response.send_message(embed=embed, ephemeral=True)
 

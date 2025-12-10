@@ -5,8 +5,9 @@ import nextcord
 from ..utils.config import emojis
 
 def setup(bot):
-    @bot.event
-    async def on_message(message: nextcord.Message):
+    # Use a listener so multiple on_message handlers can coexist
+    @bot.listen("on_message")
+    async def _on_message_mention(message: nextcord.Message):
         """React to bot mentions with an emoji"""
         # React with an emoji if the bot is mentioned
         if message.guild and bot.user and bot.user.mentioned_in(message):
