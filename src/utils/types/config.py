@@ -1,14 +1,5 @@
 from pydantic import BaseModel, Field
 
-class Channels(BaseModel):
-    # defaults
-    spam: str = "bot-spam"
-    exile_chat: int = Field(default=866773791560040519, description="Exile 7 channel ID")
-    level: str = "levels"
-
-class Roles(BaseModel):
-    giveaway_manager_role: str = Field(default="giveaway manager", description="Role name that can create/reroll giveaways")
-    exile_role: int = Field(default=866772888635441162, description="Exile 7 role ID")
 
 class Emojis(BaseModel):
     # General
@@ -46,11 +37,48 @@ class Emojis(BaseModel):
     point_laugh: str = "<:laugh_point:1356266540739330321>"
     blush_finger: str = "<:blush_finger:1337833082954317885>"
     laugh: str = "<a:laugh:1356266810718027820>"
+    party_shake: str = "<a:peepo_partyhat:1377007874777157632>"
+
+    # Roo the Panda
+    roo_fire: str = "<a:panda_fire:1337833115225161788>"
+
+class XpBonus(BaseModel):
+    """Represents a static XP bonus for a channel or role"""
+    id: int
+    amount: int = Field(gt=0, description="Amount of XP to add")
+
+class XpMultiplier(BaseModel):
+    """Represents an XP multiplier for a role"""
+    id: int
+    value: float = Field(gt=0.0, description="Multiplier value (e.g., 1.5 for x1.5)")
+
+class XpTrueMultiplier(BaseModel):
+    """Represents a true XP multiplier (applied last) for a role"""
+    id: int
+    value: float = Field(gt=0.0, description="True multiplier value (e.g., 2.0 for x2)")
+
+class Channels(BaseModel):
+    
+    spam: str = Field(default="bot-spam")
+    level: str = Field(default="levels")
+    exile_chat: int = Field(default=866773791560040519, description="Exile 7 channel ID")
+    xp_bonuses: list[XpBonus] = Field(default=[], description="Channels that grant static XP bonuses")
+    xp_multipliers: list[XpMultiplier] = Field(default=[], description="Channels that grant normal XP multipliers")
+
+class Roles(BaseModel):
+    giveaway_manager_role: str = Field(default="giveaway manager", description="Role name that can create/reroll giveaways")
+    exile_role: int = Field(default=866772888635441162, description="Exile 7 role ID")
+    booster_role: int = Field(default=970496362766536756, description="Server boost role ID for XP multiplier")
+    
+    xp_bonuses: list[XpBonus] = Field(default=[], description="Roles that grant static XP bonuses")
+    xp_multipliers: list[XpMultiplier] = Field(default=[], description="Roles that grant normal XP multipliers")
+    xp_true_multipliers: list[XpTrueMultiplier] = Field(default=[], description="Roles that grant true XP multipliers (calculated last)")
 
 class Config(BaseModel):
     PREFIX: str = "!"
     test_server_id: int
     exile_server_id: int
-    # Role name used to identify users allowed to manage giveaways
+
     # XP given per message
-    base_XP: int = Field(default=33, description="Amount of base given per message")
+    base_XP: int = Field(default=35, description="Amount of base given per message")
+    level_multiplier_rate: float = Field(default=0.01, description="XP multiplier per user level (e.g., 0.01 = +1% per level)")
