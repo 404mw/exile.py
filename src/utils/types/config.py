@@ -53,4 +53,4 @@ class Config(BaseModel):
     exile_server_id: int
     # Role name used to identify users allowed to manage giveaways
     # XP given per message
-    XP: int = Field(default=10, description="Amount of base given per message")
+    base_XP: int = Field(default=33, description="Amount of base given per message")

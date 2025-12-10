@@ -39,7 +39,7 @@ def setup(bot):
         elif has_exile_role or is_in_exile_chat:
             xp_multiplier = 2  # +1 additional multiplier
         
-        xp_amount = config.XP * xp_multiplier
+        xp_amount = config.base_XP * xp_multiplier
         
         # Add XP and check for level up
         leveled_up, new_level, old_level = add_xp(
