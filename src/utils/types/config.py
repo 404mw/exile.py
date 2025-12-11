@@ -70,10 +70,14 @@ class Roles(BaseModel):
     giveaway_manager_role: str = Field(default="giveaway manager", description="Role name that can create/reroll giveaways")
     exile_role: int = Field(default=866772888635441162, description="Exile 7 role ID")
     booster_role: int = Field(default=970496362766536756, description="Server boost role ID for XP multiplier")
+    premium_xp: int
     
     xp_bonuses: list[XpBonus] = Field(default=[], description="Roles that grant static XP bonuses")
     xp_multipliers: list[XpMultiplier] = Field(default=[], description="Roles that grant normal XP multipliers")
     xp_true_multipliers: list[XpTrueMultiplier] = Field(default=[], description="Roles that grant true XP multipliers (calculated last)")
+
+class UserIDs(BaseModel):
+    blank: int = Field(default=315225900113199106, description="Blank wanna stays sneaky ☠️")
 
 class Config(BaseModel):
     PREFIX: str = "!"

@@ -8,7 +8,7 @@ Uses the four-tier XP calculation system:
 4. True multiplier: final multiplier for a specific role
 """
 import nextcord
-from ..utils.config import config, channels, emojis
+from ..utils.config import config, channels, emojis, user_ids
 from ..utils.functions.leveling import add_xp, calculate_xp_from_context
 
 def setup(bot):
@@ -19,8 +19,8 @@ def setup(bot):
         if not message.guild or message.guild.id != config.exile_server_id:
             return
         
-        # Ignore bot messages
-        if message.author.bot:
+        # Ignore bot and blank's messages
+        if message.author.bot or message.author.id == user_ids.blank:
             return
         
         # Ignore spam channel

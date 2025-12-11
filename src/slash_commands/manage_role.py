@@ -13,7 +13,6 @@ class ManageRole(commands.Cog):
     @nextcord.slash_command(
         name="manage_role",
         description="Manage roles by adding or removing them from users",
-        default_member_permissions=Permissions(manage_roles=True)
     )
     async def manage_role(
         self,

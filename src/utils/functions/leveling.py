@@ -213,26 +213,44 @@ def save_user_levels(data: Dict[str, Dict]) -> None:
         json.dump(data, f, indent=2)
 
 def get_level_for_xp(xp: int, level_costs: Dict[str, int]) -> int:
-    """Calculate what level a user should be at for a given total XP"""
-    level = 1
-    total_xp_needed = 0
+    """Calculate what level a user should be at for a given total XP.
+    
+    levelCosts.json contains the XP required to reach each level (cumulative).
+    For example: "1": 103 means you need 103 XP to reach level 1.
+    
+    Args:
+        xp: Total XP the user has
+        level_costs: Dict mapping level (as string) to cumulative XP required
+        
+    Returns:
+        The highest level the user can reach with their XP
+    """
+    level = 0
     
     for lv in sorted([int(k) for k in level_costs.keys()]):
-        if xp >= total_xp_needed + level_costs[str(lv)]:
-            total_xp_needed += level_costs[str(lv)]
-            level = lv + 1
+        if xp >= level_costs[str(lv)]:
+            level = lv
         else:
             break
     
     return level
 
 def get_xp_for_level(level: int, level_costs: Dict[str, int]) -> int:
-    """Calculate total XP needed to reach a specific level"""
-    total_xp = 0
-    for lv in range(1, level):
-        if str(lv) in level_costs:
-            total_xp += level_costs[str(lv)]
-    return total_xp
+    """Calculate total XP needed to reach a specific level.
+    
+    levelCosts.json contains cumulative XP required for each level.
+    We just need to look up the level directly.
+    
+    Args:
+        level: The level to get XP for
+        level_costs: Dict mapping level (as string) to cumulative XP required
+        
+    Returns:
+        Cumulative XP needed to reach that level
+    """
+    if str(level) in level_costs:
+        return level_costs[str(level)]
+    return 0
 
 def add_xp(
     user_id: int,

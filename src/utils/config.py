@@ -1,8 +1,14 @@
-from .types.config import Emojis, Channels, Config, Roles, XpBonus, XpMultiplier, XpTrueMultiplier
+import os
+from dotenv import load_dotenv
+from .types.config import Emojis, Channels, Config, Roles, XpBonus, XpMultiplier, XpTrueMultiplier, UserIDs
+
+load_dotenv()
+PREMIUM_ROLE: int = int(os.environ["PREMIUM_ROLE"])
 
 emojis = Emojis()
 channels = Channels()
-roles = Roles()
+roles = Roles(premium_xp=PREMIUM_ROLE)
+user_ids = UserIDs()
 
 config = Config(
     test_server_id = 1076157809281994842,
@@ -54,7 +60,7 @@ roles.xp_multipliers = [
 
 roles.xp_true_multipliers = [
     XpTrueMultiplier(id=roles.booster_role, value=2.0),
-    
+    XpTrueMultiplier(id=roles.premium_xp, value=2.0)
 ]
 
 # ============================================================================

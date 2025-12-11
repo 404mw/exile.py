@@ -9,8 +9,7 @@ class CreateRole(commands.Cog):
 
     @nextcord.slash_command(
         name="create_role",
-        description="Create a new role with default permissions",
-        default_member_permissions=Permissions(manage_roles=True)
+        description="Create a new role with default permissions"
     )
     async def create_role(
         self,
