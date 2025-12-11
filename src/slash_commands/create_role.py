@@ -1,6 +1,7 @@
 import nextcord
-from nextcord import Interaction, SlashOption, Color, Permissions
+from nextcord import Interaction, SlashOption, Color
 from nextcord.ext import commands
+from ..utils.config import config
 
 
 class CreateRole(commands.Cog):
@@ -9,8 +10,10 @@ class CreateRole(commands.Cog):
 
     @nextcord.slash_command(
         name="create_role",
-        description="Create a new role with default permissions"
+        description="Create a new role with default permissions",
+        guild_ids=[config.exile_server_id]
     )
+    @commands.is_owner()
     async def create_role(
         self,
         interaction: Interaction,
@@ -19,10 +22,6 @@ class CreateRole(commands.Cog):
     ):
         """Create a new role in the server with specified name and color."""
 
-        if interaction.user.id != self.bot.owner_id and not interaction.user.guild_permissions.manage_roles:  # type: ignore
-            await interaction.response.send_message("You don't have permission to use this command.", ephemeral=True)
-            return
-        
         try:
             # Ensure we're in a guild
             if not interaction.guild:

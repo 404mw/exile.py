@@ -13,7 +13,9 @@ class ManageRole(commands.Cog):
     @nextcord.slash_command(
         name="manage_role",
         description="Manage roles by adding or removing them from users",
+        guild_ids=[config.exile_server_id]
     )
+    @commands.is_owner()
     async def manage_role(
         self,
         interaction: Interaction,
@@ -25,10 +27,6 @@ class ManageRole(commands.Cog):
         role: nextcord.Role = SlashOption(description="Select a role")
     ):
         """Manage roles for server users - add or remove roles."""
-
-        if interaction.user.id != self.bot.owner_id and not interaction.user.guild_permissions.manage_roles:  # type: ignore
-            await interaction.response.send_message("You don't have permission to use this command.", ephemeral=True)
-            return
         
         try:
             # Ensure we're in a guild
