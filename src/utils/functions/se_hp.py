@@ -3,7 +3,7 @@ sys.path.append(os.path.abspath("src"))
 from utils.se_hp_values import se_hp
 
 
-def get_se_hp(hp: int, percentage: int = 100) -> str:
+def get_se_hp(hp: int, percentage: int = 100) -> str | None:
     """
 Compute the HP value of a Star Expedition (SE) boss in Idle Heroes (IH).
 
@@ -13,12 +13,12 @@ Args:
         If omitted, assumes full HP.
 
 Returns:
-    int: The calculated boss HP.
+    float or None: The calculated boss HP, or None if invalid input.
 """
 
     bosshp = se_hp.get(hp)
     if bosshp is None:
-        return f"{hp} isnt a valid input"
+        return None
     
     result = (bosshp * percentage) / 100
     return result

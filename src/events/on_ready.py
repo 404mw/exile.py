@@ -21,3 +21,7 @@ def setup(bot):
         # Print a confirmation message to the console to indicate that the bot
         # has successfully connected to Discord and is ready to operate.
         print(f"✅ Logged in as {bot.user}")
+        
+        # Sync all application commands (slash commands) with Discord
+        await bot.sync_all_application_commands()
+        print("✅ Application commands synced")
