@@ -3,7 +3,7 @@ from decimal import Decimal, getcontext
 
 getcontext().prec = 100  # high precision for safety
 
-INPUT_JSON = "seHP.json"
+INPUT_JSON = "../data/seHP.json"
 OUTPUT_PY = "generated_data.py"
 
 THRESHOLD = Decimal("1e14")
