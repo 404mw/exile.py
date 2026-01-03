@@ -28,31 +28,35 @@ def calculate_xp_from_context(
     user_id: int
 ) -> Tuple[int, Dict[str, object]]:
     """
-    Calculate total XP earned based on user's roles, channel context, and level.
-    
-    Four-tier calculation:
-    1. Static additions (+ amount)
-    2. Normal multipliers (* amount)  
-    3. Level multiplier (* amount based on user level)
-    4. True multiplier (* amount) - applied last
-    
+    Calculates the total XP a user should receive based on a variety of contextual factors.
+
+    This function implements a four-tier XP calculation system:
+    1.  **Static Additions:** Flat XP bonuses from channels or roles are added to the base XP.
+    2.  **Normal Multipliers:** The result is then multiplied by any channel or role-based multipliers.
+    3.  **Level Multiplier:** A multiplier based on the user's current level is applied.
+    4.  **True Multiplier:** A final, overriding multiplier (e.g., for a special event role) is applied.
+
     Args:
-        base_xp: Base XP amount
-        member: Discord Member object
-        channel_id: Channel where message was sent
-        user_id: Discord user ID to look up current level
-        
+        base_xp: The initial amount of XP before any modifications.
+        member: The `nextcord.Member` object for the user who sent the message, used to check roles.
+        channel_id: The ID of the channel where the message was sent, used to check for channel-specific bonuses.
+        user_id: The ID of the user, used to fetch their current level for the level multiplier.
+
     Returns:
-        Tuple of (total_xp, breakdown_dict)
-        breakdown_dict contains:
-        - base_xp: Initial base XP
-        - static_additions: List of static bonuses
-        - static_total: Sum of static additions
-        - multiplier_values: List of normal multipliers
-        - multiplier_product: Product of normal multipliers
-        - level_multiplier: Level-based multiplier value
-        - true_multiplier: Final true multiplier value
-        - total_xp: Final calculated XP
+        A tuple containing:
+        - The final, calculated total XP as an integer.
+        - A dictionary detailing the breakdown of the calculation for logging or debugging purposes.
+          Example:
+          {
+              "base_xp": 10,
+              "static_additions": [{"source": "channel_123", "amount": 5}],
+              "static_total": 5,
+              "multiplier_values": [{"source": "role_456", "value": 1.5}],
+              "multiplier_product": 1.5,
+              "level_multiplier": 1.02,
+              "true_multiplier": 1.0,
+              "total_xp": 15
+          }
     """
     
     breakdown = {
@@ -159,19 +163,21 @@ def get_xp_breakdown(
     user_id: int
 ) -> Dict[str, object]:
     """
-    Get detailed breakdown of XP calculation for display purposes.
-    
-    Returns dict containing:
-    - base_xp: Initial XP
-    - static_additions: List of static bonuses applied
-    - static_total: Sum of static additions
-    - subtotal_after_static: base_xp + static_total
-    - multiplier_values: List of normal multipliers
-    - multiplier_product: Product of multipliers
-    - subtotal_after_multipliers: subtotal_after_static * multiplier_product
-    - level_multiplier: Level-based multiplier value
-    - true_multiplier: Final multiplier value
-    - total_xp: Final XP amount
+    Provides a detailed, user-friendly breakdown of an XP calculation.
+
+    This function is a wrapper around `calculate_xp_from_context` that adds
+    intermediate subtotals to the breakdown, making it easier to display the
+    calculation step-by-step.
+
+    Args:
+        base_xp: The initial amount of XP before any modifications.
+        member: The `nextcord.Member` object for the user.
+        channel_id: The ID of the channel where the message was sent.
+        user_id: The ID of the user.
+
+    Returns:
+        A dictionary containing a comprehensive breakdown of the XP calculation,
+        including intermediate subtotals.
     """
     
     _, breakdown = calculate_xp_from_context(base_xp, member, channel_id, user_id)
@@ -190,7 +196,16 @@ def get_xp_breakdown(
 # ============================================================================
 
 def load_level_costs() -> Dict[str, int]:
-    """Load level costs from levelCosts.json"""
+    """
+    Loads the level cost data from the corresponding JSON file.
+
+    The levelCosts.json file is expected to be a dictionary mapping level
+    numbers (as strings) to the cumulative XP required to reach that level.
+
+    Returns:
+        A dictionary of level costs. Returns an empty dictionary if the file
+        is not found or contains invalid JSON.
+    """
     try:
         with open(LEVEL_COSTS_PATH, 'r') as f:
             return json.load(f)
@@ -199,7 +214,14 @@ def load_level_costs() -> Dict[str, int]:
         return {}
 
 def load_user_levels() -> Dict[str, Dict]:
-    """Load all user levels from JSON file"""
+    """
+    Loads all user level and XP data from the user_levels.json file.
+
+    Returns:
+        A dictionary where keys are user IDs (as strings) and values are
+        dictionaries containing user data (e.g., username, xp, level).
+        Returns an empty dictionary if the file is not found or is empty.
+    """
     try:
         with open(LEVEL_DATA_PATH, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -207,23 +229,33 @@ def load_user_levels() -> Dict[str, Dict]:
         return {}
 
 def save_user_levels(data: Dict[str, Dict]) -> None:
-    """Save user levels to JSON file"""
+    """
+    Saves the provided user level data to the user_levels.json file.
+
+    This function will create the data directory if it doesn't exist.
+    The data is saved in a human-readable format with an indent of 2.
+
+    Args:
+        data: A dictionary containing all user level data to be saved.
+    """
     os.makedirs(os.path.dirname(LEVEL_DATA_PATH), exist_ok=True)
     with open(LEVEL_DATA_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
 def get_level_for_xp(xp: int, level_costs: Dict[str, int]) -> int:
-    """Calculate what level a user should be at for a given total XP.
-    
-    levelCosts.json contains the XP required to reach each level (cumulative).
-    For example: "1": 103 means you need 103 XP to reach level 1.
-    
+    """
+    Determines a user's level based on their total accumulated XP.
+
+    It iterates through the sorted level costs and finds the highest level
+    the user has achieved.
+
     Args:
-        xp: Total XP the user has
-        level_costs: Dict mapping level (as string) to cumulative XP required
-        
+        xp: The total XP of the user.
+        level_costs: A dictionary mapping level numbers to cumulative XP costs.
+
     Returns:
-        The highest level the user can reach with their XP
+        The calculated level for the given XP. Returns 0 if the user's XP
+        doesn't meet the requirement for level 1.
     """
     level = 0
     
@@ -236,17 +268,16 @@ def get_level_for_xp(xp: int, level_costs: Dict[str, int]) -> int:
     return level
 
 def get_xp_for_level(level: int, level_costs: Dict[str, int]) -> int:
-    """Calculate total XP needed to reach a specific level.
-    
-    levelCosts.json contains cumulative XP required for each level.
-    We just need to look up the level directly.
-    
+    """
+    Retrieves the total cumulative XP required to reach a specific level.
+
     Args:
-        level: The level to get XP for
-        level_costs: Dict mapping level (as string) to cumulative XP required
-        
+        level: The level to look up.
+        level_costs: A dictionary mapping level numbers to cumulative XP costs.
+
     Returns:
-        Cumulative XP needed to reach that level
+        The cumulative XP required for the given level. Returns 0 if the
+        level is not found in the `level_costs` dictionary.
     """
     if str(level) in level_costs:
         return level_costs[str(level)]
@@ -258,15 +289,22 @@ def add_xp(
     xp_amount: int
 ) -> Tuple[bool, int, int]:
     """
-    Add XP to a user and check if they leveled up.
-    
+    Adds a specified amount of XP to a user and updates their level.
+
+    This function handles loading user data, adding XP, checking for level ups,
+    and saving the updated data. If the user does not exist in the data file,
+    they will be created.
+
     Args:
-        user_id: Discord user ID
-        username: Discord username
-        xp_amount: Amount of XP to add (should be pre-calculated via calculate_xp_from_context)
-    
+        user_id: The Discord ID of the user.
+        username: The current username of the user (will be updated in the data).
+        xp_amount: The amount of XP to add (should be pre-calculated).
+
     Returns:
-        Tuple of (leveled_up, new_level, old_level)
+        A tuple containing:
+        - A boolean indicating if the user leveled up (`True` if they did, `False` otherwise).
+        - The user's new level.
+        - The user's old level.
     """
     user_levels = load_user_levels()
     level_costs = load_level_costs()
@@ -297,7 +335,25 @@ def add_xp(
     return leveled_up, new_level, old_level
 
 def get_user_level_info(user_id: int) -> Optional[Dict]:
-    """Get level information for a specific user"""
+    """
+    Retrieves detailed level and XP information for a specific user.
+
+    This is useful for displaying user stats, such as in a profile or
+    leaderboard command.
+
+    Args:
+        user_id: The Discord ID of the user to look up.
+
+    Returns:
+        A dictionary containing detailed user stats if the user is found,
+        otherwise `None`. The dictionary includes:
+        - `username`: The user's name.
+        - `xp`: The user's total XP.
+        - `level`: The user's current level.
+        - `xp_for_next_level`: The amount of XP needed to get from the start
+          of the current level to the next level.
+        - `xp_progress`: The user's XP progress within the current level.
+    """
     user_levels = load_user_levels()
     user_key = str(user_id)
     
