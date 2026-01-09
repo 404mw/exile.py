@@ -1,8 +1,6 @@
-import sys, os
-sys.path.append(os.path.abspath("src"))
-from utils.dt_cost import dt_cost
-from utils.temple_cost import temple_cost
 from pydantic import BaseModel
+from src.utils.dt_cost import dt_cost
+from src.utils.temple_cost import temple_cost
 
 # Type definition for the return dictionary
 class ReturnDict(BaseModel):

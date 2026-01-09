@@ -10,15 +10,12 @@ is a general question or a game-related query. Based on this classification,
 it hands off the query to either the `chat_agent` or the `tool_agent`.
 """
 
-import sys, os
+import os
 from dotenv import load_dotenv
 
 # ======================================================================================
 # ENVIRONMENT VARIABLES
 # ======================================================================================
-
-# Add the src directory to the system path to allow for absolute imports.
-sys.path.append(os.path.abspath("src"))
 
 # Load environment variables from the .env file.
 # The `OPENAI_MODEL` environment variable is required for the agent to know which

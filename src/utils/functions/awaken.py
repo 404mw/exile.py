@@ -1,7 +1,6 @@
-import random, json, os, sys
+import random, json, os
 from importlib import import_module
 from typing import List, Dict, Any, Optional, Tuple
-sys.path.append(os.path.abspath("src"))
 
 def get_current_pool() -> Tuple[List[Dict[str, Any]], str]:
     """
@@ -15,11 +14,11 @@ def get_current_pool() -> Tuple[List[Dict[str, Any]], str]:
         curr_pool = json.load(f)
 
     if not curr_pool["normal"]:
-        module = import_module("utils.awa_pool_buffed")
+        module = import_module("src.utils.awa_pool_buffed")
         pool = module.pool
         pool_name: str = "buffed"
     else:
-        module = import_module("utils.awa_pool")
+        module = import_module("src.utils.awa_pool")
         pool = module.pool
         pool_name: str = "normal"
     

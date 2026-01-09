@@ -8,7 +8,6 @@ questions that are answered by the bot's AI agent.
 import nextcord
 from nextcord.ext import commands
 from agents import Agent, ModelSettings, Runner
-from src.agent.tool_caller import tool_agent
 from src.utils.config import config
 from src.utils.functions.chat_history import update_chat_history
 from src.utils.types.chat_history import ChatHistory
@@ -18,6 +17,17 @@ import re
 
 load_dotenv()
 MODEL = os.getenv("OPENAI_MODEL")
+
+# Lazy import to avoid circular dependencies and ensure all modules are loaded
+_tool_agent = None
+
+def get_tool_agent():
+    """Lazy-load the tool_agent to avoid import issues at module load time."""
+    global _tool_agent
+    if _tool_agent is None:
+        from src.agent.tool_caller import tool_agent
+        _tool_agent = tool_agent
+    return _tool_agent
 
 
 class Ask(commands.Cog):
@@ -55,13 +65,18 @@ class Ask(commands.Cog):
             interaction (Interaction): The interaction object.
             query (str): The user's question.
         """
+        # Defer IMMEDIATELY to prevent timeout (Discord gives 3 seconds)
+        try:
+            await interaction.response.defer()
+        except nextcord.errors.NotFound:
+            # Interaction already expired, can't recover
+            print(f"Interaction expired before defer for user query: {query[:50]}...")
+            return
+
         try:
             # ============================================================================
             # COMMAND PROCESSING
             # ============================================================================
-
-            # Defer the response to allow time for the agent to process the query.
-            await interaction.response.defer()
 
             if not interaction.user:
                 await interaction.followup.send(
@@ -107,11 +122,11 @@ Here is the user's recent query history (from newest to oldest):
                 instructions="""
 1- Do not answer queries yourself.
 2- Classify each query:
-  - If it’s a general question, handoff to chat_agent.
-  - If it’s game-related data, handoff to tool_caller.
+  - If it's a general question, handoff to chat_agent.
+  - If it's game-related data, handoff to tool_caller.
 3- Always route, never respond directly.
 """,
-                handoffs=[tool_agent, chat_agent]
+                handoffs=[get_tool_agent(), chat_agent]
             )
 
             # Run the navigator agent with the user's query.
@@ -131,17 +146,23 @@ Here is the user's recent query history (from newest to oldest):
             # ============================================================================
 
             # Print the error to the console for debugging purposes.
-            print(e)
+            print(f"Error in /ask command: {e}")
+            import traceback
+            traceback.print_exc()
 
             # Send an ephemeral error message to the user.
-            if not interaction.response.is_done():
-                await interaction.response.send_message(
-                    "⚠️ Something went wrong, kindly try again.", ephemeral=True
-                )
-            else:
-                await interaction.followup.send(
-                    "⚠️ Something went wrong, kindly try again.", ephemeral=True
-                )
+            try:
+                if not interaction.response.is_done():
+                    await interaction.response.send_message(
+                        "⚠️ Something went wrong, kindly try again.", ephemeral=True
+                    )
+                else:
+                    await interaction.followup.send(
+                        "⚠️ Something went wrong, kindly try again.", ephemeral=True
+                    )
+            except nextcord.errors.NotFound:
+                # Interaction expired, can't send error message
+                print("Could not send error message - interaction expired")
 
 
 def setup(bot: commands.Bot):

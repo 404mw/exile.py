@@ -1,13 +1,9 @@
-import sys
-import os
-
-sys.path.append(os.path.abspath("src"))
 import nextcord
 from nextcord.ext import commands
 from pydantic import BaseModel, Field
-from utils.functions import get_dt_calc
-from utils.temple_cost import temple_cost as temp_cost
-from utils.config import emojis
+from src.utils.functions import get_dt_calc
+from src.utils.temple_cost import temple_cost as temp_cost
+from src.utils.config import emojis
 
 
 class TempleRequirement(BaseModel):

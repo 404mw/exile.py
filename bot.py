@@ -22,6 +22,19 @@ components and running them as a cohesive application.
 """
 
 import os
+import sys
+from pathlib import Path
+
+# Add the project root to Python path to handle imports correctly
+# This ensures imports work regardless of where the script is run from
+project_root = Path(__file__).parent.resolve()
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+# Change working directory to project root
+# This ensures relative file paths (like data/awaPool.json) work correctly
+os.chdir(project_root)
+
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv

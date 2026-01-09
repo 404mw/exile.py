@@ -6,14 +6,11 @@ simulate hero awakenings with different probability pools (normal or buffed)
 and calculate the total resources spent and gained.
 """
 
-import os
-import sys
 import nextcord
 from nextcord.ext import commands
 
-sys.path.append(os.path.abspath("src"))
-from utils.functions.awaken import make_response
-from utils.config import channels
+from src.utils.functions.awaken import make_response
+from src.utils.config import channels
 
 
 class Awaken(commands.Cog):

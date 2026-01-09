@@ -8,7 +8,7 @@ appropriate tools. It is designed to be a tool-user only and will not
 handle any other queries.
 """
 
-import sys, os
+import os
 from agents import Agent, ModelSettings
 from dotenv import load_dotenv
 
@@ -22,9 +22,6 @@ from src.agent.tools import (
 # ======================================================================================
 # ENVIRONMENT VARIABLES
 # ======================================================================================
-
-# Add the src directory to the system path to allow for absolute imports.
-sys.path.append(os.path.abspath("src"))
 
 # Load environment variables from the .env file.
 # The `OPENAI_MODEL` environment variable is required for the agent to know which

@@ -1,6 +1,4 @@
-import sys, os
-sys.path.append(os.path.abspath("src"))
-from utils.se_hp_values import se_hp
+from src.utils.se_hp_values import se_hp
 
 
 def get_se_hp(hp: int, percentage: int = 100) -> str | None:
